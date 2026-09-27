@@ -2,12 +2,16 @@ package salary_management.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import salary_management.dto.EmployeeRequest;
 import salary_management.dto.EmployeeResponse;
 import salary_management.entity.Employee;
 import salary_management.repository.EmployeeRepository;
 import salary_management.exception.EmployeeNotFoundException;
+import salary_management.specification.EmployeeSpecification;
 
 import java.util.List;
 
@@ -18,11 +22,34 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<EmployeeResponse> getAllEmployees() {
-        return employeeRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<EmployeeResponse> getAllEmployees(
+            String search,
+            String department,
+            String country,
+            Pageable pageable) {
+
+        Specification<Employee> specification = (root, query, criteriaBuilder) -> null;
+
+        if (search != null && !search.isBlank()) {
+            specification = specification.and(
+                    EmployeeSpecification.hasSearchTerm(search)
+            );
+        }
+
+        if (department != null && !department.isBlank()) {
+            specification = specification.and(
+                    EmployeeSpecification.hasDepartment(department)
+            );
+        }
+
+        if (country != null && !country.isBlank()) {
+            specification = specification.and(
+                    EmployeeSpecification.hasCountry(country)
+            );
+        }
+
+        return employeeRepository.findAll(specification, pageable)
+                .map(this::toResponse);
     }
 
     @Override

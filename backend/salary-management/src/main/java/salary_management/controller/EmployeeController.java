@@ -2,6 +2,8 @@ package salary_management.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import salary_management.dto.EmployeeRequest;
@@ -20,8 +22,18 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping
-    public List<EmployeeResponse> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public Page<EmployeeResponse> getAllEmployees(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String country,
+            Pageable pageable) {
+
+        return employeeService.getAllEmployees(
+                search,
+                department,
+                country,
+                pageable
+        );
     }
 
     @GetMapping("/{id}")
