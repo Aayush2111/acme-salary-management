@@ -7,6 +7,7 @@ import salary_management.dto.EmployeeRequest;
 import salary_management.dto.EmployeeResponse;
 import salary_management.entity.Employee;
 import salary_management.repository.EmployeeRepository;
+import salary_management.exception.EmployeeNotFoundException;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Employee not found with id: " + id));
+                        new EmployeeNotFoundException("Employee not found with id: " + id));
 
         return toResponse(employee);
     }
@@ -43,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse updateEmployee(Long id, EmployeeRequest request) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Employee not found with id: " + id));
+                        new EmployeeNotFoundException("Employee not found with id: " + id));
 
         employee.setEmployeeNumber(request.getEmployeeNumber());
         employee.setFirstName(request.getFirstName());
@@ -62,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Employee not found with id: " + id));
+                        new EmployeeNotFoundException("Employee not found with id: " + id));
 
         employeeRepository.delete(employee);
     }
