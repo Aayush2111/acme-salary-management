@@ -5,13 +5,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import salary_management.dto.EmployeeRequest;
-import salary_management.dto.EmployeeResponse;
+import salary_management.dto.*;
 import salary_management.entity.Employee;
 import salary_management.exception.EmployeeNotFoundException;
 import salary_management.repository.EmployeeRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -180,5 +180,66 @@ class EmployeeServiceImplTest {
 
         verify(employeeRepository).findById(employeeId);
         verify(employeeRepository).delete(employee);
+    }
+
+    @Test
+    void shouldGetSalaryByDepartment() {
+
+        DepartmentSalaryResponse engineering =
+                new DepartmentSalaryResponse(
+                        "Engineering",
+                        50L,
+                        900000.0
+                );
+
+        DepartmentSalaryResponse finance =
+                new DepartmentSalaryResponse(
+                        "Finance",
+                        30L,
+                        750000.0
+                );
+
+        when(employeeRepository.findSalaryByDepartment())
+                .thenReturn(List.of(engineering, finance));
+
+        List<DepartmentSalaryResponse> result =
+                employeeService.getSalaryByDepartment();
+
+        assertEquals(2, result.size());
+        assertEquals("Engineering", result.get(0).getDepartment());
+        assertEquals(50L, result.get(0).getEmployeeCount());
+        assertEquals(900000.0, result.get(0).getAverageSalary());
+
+        verify(employeeRepository).findSalaryByDepartment();
+    }
+
+    @Test
+    void shouldGetSalaryByCountry() {
+
+        CountrySalaryResponse india =
+                new CountrySalaryResponse(
+                        "India",
+                        70L,
+                        820000.0
+                );
+
+        CountrySalaryResponse usa =
+                new CountrySalaryResponse(
+                        "United States",
+                        30L,
+                        1200000.0
+                );
+
+        when(employeeRepository.findSalaryByCountry())
+                .thenReturn(List.of(india, usa));
+
+        List<CountrySalaryResponse> result =
+                employeeService.getSalaryByCountry();
+
+        assertEquals(2, result.size());
+        assertEquals("India", result.get(0).getCountry());
+        assertEquals(70L, result.get(0).getEmployeeCount());
+
+        verify(employeeRepository).findSalaryByCountry();
     }
 }
