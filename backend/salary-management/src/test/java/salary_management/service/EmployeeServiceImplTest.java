@@ -242,4 +242,39 @@ class EmployeeServiceImplTest {
 
         verify(employeeRepository).findSalaryByCountry();
     }
+
+    @Test
+    void shouldCalculateSalaryDistribution() {
+
+        when(employeeRepository.findAllSalaries())
+                .thenReturn(List.of(
+                        new BigDecimal("400000"),
+                        new BigDecimal("750000"),
+                        new BigDecimal("1200000"),
+                        new BigDecimal("1700000"),
+                        new BigDecimal("2500000")
+                ));
+
+        List<SalaryDistributionResponse> result =
+                employeeService.getSalaryDistribution();
+
+        assertEquals(5, result.size());
+
+        assertEquals("< 500K", result.get(0).getSalaryRange());
+        assertEquals(1L, result.get(0).getEmployeeCount());
+
+        assertEquals("500K - 999K", result.get(1).getSalaryRange());
+        assertEquals(1L, result.get(1).getEmployeeCount());
+
+        assertEquals("1M - 1.49M", result.get(2).getSalaryRange());
+        assertEquals(1L, result.get(2).getEmployeeCount());
+
+        assertEquals("1.5M - 1.99M", result.get(3).getSalaryRange());
+        assertEquals(1L, result.get(3).getEmployeeCount());
+
+        assertEquals("2M+", result.get(4).getSalaryRange());
+        assertEquals(1L, result.get(4).getEmployeeCount());
+
+        verify(employeeRepository).findAllSalaries();
+    }
 }
