@@ -2,8 +2,7 @@ package salary_management.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import salary_management.dto.EmployeeRequest;
-import salary_management.dto.EmployeeResponse;
+import salary_management.dto.*;
 
 import java.util.List;
 
@@ -23,4 +22,12 @@ public interface EmployeeService {
     EmployeeResponse updateEmployee(Long id, EmployeeRequest request);
 
     void deleteEmployee(Long id);
+
+    SalarySummaryResponse getSalarySummary();
+
+    List<DepartmentSalaryResponse> getSalaryByDepartment();
+
+    List<CountrySalaryResponse> getSalaryByCountry();
+
+    List<SalaryDistributionResponse> getSalaryDistribution();
 }

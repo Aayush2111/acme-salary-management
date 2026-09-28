@@ -6,13 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import salary_management.dto.EmployeeRequest;
-import salary_management.dto.EmployeeResponse;
+import salary_management.dto.*;
 import salary_management.entity.Employee;
 import salary_management.repository.EmployeeRepository;
 import salary_management.exception.EmployeeNotFoundException;
 import salary_management.specification.EmployeeSpecification;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -122,5 +122,80 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .salary(employee.getSalary())
                 .currency(employee.getCurrency())
                 .build();
+    }
+
+    @Override
+    public SalarySummaryResponse getSalarySummary() {
+
+        return SalarySummaryResponse.builder()
+                .totalEmployees(employeeRepository.countEmployees())
+                .averageSalary(employeeRepository.findAverageSalary())
+                .minimumSalary(employeeRepository.findMinimumSalary())
+                .maximumSalary(employeeRepository.findMaximumSalary())
+                .build();
+    }
+
+    @Override
+    public List<DepartmentSalaryResponse> getSalaryByDepartment() {
+        return employeeRepository.findSalaryByDepartment();
+    }
+
+    @Override
+    public List<CountrySalaryResponse> getSalaryByCountry() {
+        return employeeRepository.findSalaryByCountry();
+    }
+
+    @Override
+    public List<SalaryDistributionResponse> getSalaryDistribution() {
+
+        List<BigDecimal> salaries = employeeRepository.findAllSalaries();
+
+        long below500k = 0;
+        long between500kAnd1m = 0;
+        long between1mAnd1_5m = 0;
+        long between1_5mAnd2m = 0;
+        long above2m = 0;
+
+        for (BigDecimal salary : salaries) {
+
+            if (salary.compareTo(BigDecimal.valueOf(500_000)) < 0) {
+                below500k++;
+            } else if (salary.compareTo(BigDecimal.valueOf(1_000_000)) < 0) {
+                between500kAnd1m++;
+            } else if (salary.compareTo(BigDecimal.valueOf(1_500_000)) < 0) {
+                between1mAnd1_5m++;
+            } else if (salary.compareTo(BigDecimal.valueOf(2_000_000)) < 0) {
+                between1_5mAnd2m++;
+            } else {
+                above2m++;
+            }
+        }
+
+        return List.of(
+                SalaryDistributionResponse.builder()
+                        .salaryRange("< 500K")
+                        .employeeCount(below500k)
+                        .build(),
+
+                SalaryDistributionResponse.builder()
+                        .salaryRange("500K - 999K")
+                        .employeeCount(between500kAnd1m)
+                        .build(),
+
+                SalaryDistributionResponse.builder()
+                        .salaryRange("1M - 1.49M")
+                        .employeeCount(between1mAnd1_5m)
+                        .build(),
+
+                SalaryDistributionResponse.builder()
+                        .salaryRange("1.5M - 1.99M")
+                        .employeeCount(between1_5mAnd2m)
+                        .build(),
+
+                SalaryDistributionResponse.builder()
+                        .salaryRange("2M+")
+                        .employeeCount(above2m)
+                        .build()
+        );
     }
 }
