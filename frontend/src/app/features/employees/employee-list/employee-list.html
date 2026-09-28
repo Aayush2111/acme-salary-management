@@ -1,0 +1,94 @@
+<div class="employee-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Employees</h1>
+      <p>Manage employee salary information</p>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading">
+      Loading employees...
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (!loading && !errorMessage) {
+
+    <div class="employee-summary">
+      Total employees: <strong>{{ totalElements }}</strong>
+    </div>
+
+    <div class="table-container">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Employee #</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Country</th>
+            <th>Job Title</th>
+            <th>Salary</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (employee of employees; track employee.id) {
+            <tr>
+              <td>{{ employee.employeeNumber }}</td>
+
+              <td>
+                {{ employee.firstName }} {{ employee.lastName }}
+              </td>
+
+              <td>{{ employee.email }}</td>
+
+              <td>{{ employee.department }}</td>
+
+              <td>{{ employee.country }}</td>
+
+              <td>{{ employee.jobTitle }}</td>
+
+              <td>
+                {{ employee.salary | number:'1.0-0' }}
+                {{ employee.currency }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="pagination">
+
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="currentPage === 0">
+        Previous
+      </button>
+
+      <span>
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages - 1">
+        Next
+      </button>
+
+    </div>
+  }
+
+</div>

@@ -1,0 +1,77 @@
+.employee-page {
+  padding: 32px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+  }
+
+  p {
+    margin-top: 6px;
+    color: #666;
+  }
+}
+
+.employee-summary {
+  margin-bottom: 16px;
+}
+
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+th {
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background: #f7f7f7;
+}
+
+.loading {
+  padding: 30px;
+  text-align: center;
+}
+
+.error {
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  background: #ffebee;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
