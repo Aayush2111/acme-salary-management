@@ -1,8 +1,8 @@
-<div class="add-employee-page">
+<div class="employee-form-page">
 
   <div class="page-header">
-    <h1>Add Employee</h1>
-    <p>Create a new employee record</p>
+    <h1>{{ isEditMode ? 'Edit Employee' : 'Add Employee' }}</h1>
+    <p>{{ isEditMode ? 'Update an existing employee record' : 'Create a new employee record' }}</p>
   </div>
 
   @if (errorMessage) {
@@ -10,6 +10,14 @@
       {{ errorMessage }}
     </div>
   }
+
+  @if (loading) {
+    <div class="loading">
+      Loading employee...
+    </div>
+  }
+
+  @if (!loading) {
 
   <form class="employee-form" [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
 
@@ -94,10 +102,12 @@
     <div class="form-actions">
       <button mat-stroked-button type="button" routerLink="/employees">Cancel</button>
       <button mat-flat-button color="primary" type="submit" [disabled]="submitting">
-        {{ submitting ? 'Saving...' : 'Save employee' }}
+        {{ submitting ? 'Saving...' : (isEditMode ? 'Update employee' : 'Save employee') }}
       </button>
     </div>
 
   </form>
+
+  }
 
 </div>

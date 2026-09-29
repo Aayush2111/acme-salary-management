@@ -45,7 +45,7 @@ export class EmployeeListComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   employees: Employee[] = [];
-  displayedColumns = ['employeeNumber', 'name', 'email', 'department', 'country', 'jobTitle', 'salary'];
+  displayedColumns = ['employeeNumber', 'name', 'email', 'department', 'country', 'jobTitle', 'salary', 'actions'];
 
   departments: string[] = [];
   countries: string[] = [];

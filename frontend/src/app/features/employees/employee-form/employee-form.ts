@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +11,7 @@ import { EmployeeService } from '../../../core/services/employee';
 import { Employee } from '../../../core/models/employee.model';
 
 @Component({
-  selector: 'app-add-employee',
+  selector: 'app-employee-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -21,16 +21,21 @@ import { Employee } from '../../../core/models/employee.model';
     MatInputModule,
     MatButtonModule
   ],
-  templateUrl: './add-employee.html',
-  styleUrl: './add-employee.scss'
+  templateUrl: './employee-form.html',
+  styleUrl: './employee-form.scss'
 })
-export class AddEmployeeComponent {
+export class EmployeeFormComponent implements OnInit {
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
 
+  employeeId: number | null = null;
+  isEditMode = false;
+
+  loading = false;
   submitting = false;
   errorMessage = '';
 
@@ -45,6 +50,32 @@ export class AddEmployeeComponent {
     salary: [null as number | null, [Validators.required, Validators.min(0.01)]],
     currency: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{3}$/)]]
   });
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+
+    if (idParam) {
+      this.employeeId = Number(idParam);
+      this.isEditMode = true;
+      this.loadEmployee(this.employeeId);
+    }
+  }
+
+  private loadEmployee(id: number): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.employeeService.getEmployeeById(id).subscribe({
+      next: (employee) => {
+        this.employeeForm.patchValue(employee);
+        this.loading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Unable to load employee.';
+        this.loading = false;
+      }
+    });
+  }
 
   onSubmit(): void {
     if (this.employeeForm.invalid) {
@@ -68,13 +99,22 @@ export class AddEmployeeComponent {
       currency: formValue.currency!.toUpperCase()
     };
 
-    this.employeeService.createEmployee(employee).subscribe({
+    const request = this.isEditMode
+      ? this.employeeService.updateEmployee(this.employeeId!, employee)
+      : this.employeeService.createEmployee(employee);
+
+    request.subscribe({
       next: () => {
-        this.snackBar.open('Employee created successfully.', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          `Employee ${this.isEditMode ? 'updated' : 'created'} successfully.`,
+          'Close',
+          { duration: 3000 }
+        );
         this.router.navigate(['/employees']);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to create employee.';
+        this.errorMessage = error?.error?.message ||
+          `Unable to ${this.isEditMode ? 'update' : 'create'} employee.`;
         this.submitting = false;
       }
     });
