@@ -1,1 +1,102 @@
-<p>dashboard works!</p>
+<div class="dashboard-page">
+
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Salary analytics across the organization</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading">
+      Loading analytics...
+    </div>
+  }
+
+  @if (!loading && !errorMessage) {
+
+    @if (summary) {
+      <div class="summary-cards">
+        <mat-card>
+          <mat-card-subtitle>Total Employees</mat-card-subtitle>
+          <mat-card-title>{{ summary.totalEmployees | number }}</mat-card-title>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-subtitle>Average Salary</mat-card-subtitle>
+          <mat-card-title>{{ summary.averageSalary | number:'1.0-0' }}</mat-card-title>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-subtitle>Minimum Salary</mat-card-subtitle>
+          <mat-card-title>{{ summary.minimumSalary | number:'1.0-0' }}</mat-card-title>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-subtitle>Maximum Salary</mat-card-subtitle>
+          <mat-card-title>{{ summary.maximumSalary | number:'1.0-0' }}</mat-card-title>
+        </mat-card>
+      </div>
+    }
+
+    <div class="breakdown-grid">
+
+      <mat-card class="breakdown-card">
+        <mat-card-header>
+          <mat-card-title>By Department</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (dept of byDepartment; track dept.department) {
+            <div class="bar-row">
+              <span class="bar-label">{{ dept.department }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="(dept.employeeCount / maxDepartmentCount()) * 100"></div>
+              </div>
+              <span class="bar-value">{{ dept.employeeCount }} ({{ dept.averageSalary | number:'1.0-0' }} avg)</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="breakdown-card">
+        <mat-card-header>
+          <mat-card-title>By Country</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (country of byCountry; track country.country) {
+            <div class="bar-row">
+              <span class="bar-label">{{ country.country }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="(country.employeeCount / maxCountryCount()) * 100"></div>
+              </div>
+              <span class="bar-value">{{ country.employeeCount }} ({{ country.averageSalary | number:'1.0-0' }} avg)</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="breakdown-card">
+        <mat-card-header>
+          <mat-card-title>Salary Distribution</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (bucket of distribution; track bucket.salaryRange) {
+            <div class="bar-row">
+              <span class="bar-label">{{ bucket.salaryRange }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="(bucket.employeeCount / maxDistributionCount()) * 100"></div>
+              </div>
+              <span class="bar-value">{{ bucket.employeeCount }}</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  }
+
+</div>

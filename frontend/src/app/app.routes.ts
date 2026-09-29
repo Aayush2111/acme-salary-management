@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { EmployeeListComponent } from './features/employees/employee-list/employee-list';
 import { EmployeeFormComponent } from './features/employees/employee-form/employee-form';
+import { Dashboard } from './features/dashboard/dashboard/dashboard';
 
 export const routes: Routes = [
   {
@@ -19,5 +20,9 @@ export const routes: Routes = [
   {
     path: 'employees/:id/edit',
     component: EmployeeFormComponent
+  },
+  {
+    path: 'dashboard',
+    component: Dashboard
   }
 ];

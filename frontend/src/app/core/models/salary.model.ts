@@ -9,3 +9,15 @@ export interface CountrySalary {
   employeeCount: number;
   averageSalary: number;
 }
+
+export interface SalarySummary {
+  totalEmployees: number;
+  averageSalary: number;
+  minimumSalary: number;
+  maximumSalary: number;
+}
+
+export interface SalaryDistribution {
+  salaryRange: string;
+  employeeCount: number;
+}
