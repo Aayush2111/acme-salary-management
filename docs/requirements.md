@@ -1,107 +1,47 @@
 # ACME Salary Management – Requirements
 
-## 1. Goal
+## Goal
 
-Build a web-based salary management system for the HR Manager to replace
-Excel-based salary management.
+Give the HR Manager a web app to manage employee salary records and
+understand salary distribution across the organization, replacing
+Excel-based tracking. The app must stay responsive and maintainable with
+~10,000 employees.
 
-The system should allow HR to manage employee salary information and
-quickly understand how salaries are distributed across the organization.
+## Scope
 
-The system should remain responsive and maintainable with approximately
-10,000 employees.
+**Employee Management** — HR can view employees (paginated), search by
+name/employee number/email, filter by department and country, sort, and
+add, update, or delete an employee.
 
-## 2. Scope
+**Salary Analytics** — a dashboard shows total employees, average/min/max
+salary, average salary by department, average salary by country, and
+salary distribution across predefined ranges.
 
-### Employee Management
+**Employee Record Fields** — employee number, first name, last name,
+email, department, country, job title, salary, currency.
 
-The HR Manager can:
+Records are validated (required fields, valid email, positive salary), and
+the app ships with deterministic seed data for 10,000 employees to support
+development, testing, and demos.
 
-- View employees in a paginated list.
-- Search employees by name, employee number, or email.
-- Filter employees by department and country.
-- Sort employee records.
-- Add a new employee.
-- Update an employee.
-- Delete an employee.
-- View an employee's salary and employment information.
+## Non-Functional Requirements
 
-### Salary Analytics
+- REST APIs follow resource-oriented conventions, backed by a Controller → Service → Repository structure.
+- Business logic has meaningful automated test coverage.
+- Errors return appropriate HTTP status codes with useful messages.
+- Employee listing is paginated at the database level, not loaded in full into memory.
+- The UI is simple and responsive for HR users.
 
-The dashboard should provide:
+## Deliberately Out of Scope
 
-- Total number of employees.
-- Average salary.
-- Minimum salary.
-- Maximum salary.
-- Average salary by department.
-- Average salary by country.
-- Salary distribution across predefined salary ranges.
+- **Authentication/authorization** — a single HR Manager user/role is assumed.
+- **Payroll processing** — no tax, deductions, benefits, or payslips; this is salary management, not payroll.
+- **Employee self-service** — built for the HR Manager persona only.
+- **Historical salary tracking** — no audit trail, current data only.
+- **Real-time currency conversion** — salary and currency are stored together, no live FX integration.
 
-### Data Management
+## Success Criteria
 
-Each employee record contains:
-
-- Employee number
-- First name
-- Last name
-- Email
-- Department
-- Country
-- Job title
-- Salary
-- Currency
-
-The application should provide validation for required fields and valid
-salary/email values.
-
-The application should include deterministic seed data for 10,000 employees
-to support development, testing, and demonstration.
-
-## 3. Non-Functional Requirements
-
-- REST APIs should follow clear resource-oriented conventions.
-- Backend code should follow a Controller → Service → Repository structure.
-- Business logic should be covered by meaningful automated tests.
-- API errors should return appropriate HTTP status codes and useful error
-  responses.
-- Employee listing should use pagination rather than loading the complete
-  employee dataset.
-- The application should be deployable and publicly accessible.
-- The UI should provide a simple and responsive experience for HR users.
-- The solution should be maintainable and easy to understand.
-
-## 4. Deliberate Exclusions
-
-### Authentication and Authorization
-
-Authentication and role-based authorization are excluded from the initial
-scope because the assessment assumes a single HR Manager user/role.
-
-### Payroll Processing
-
-Payroll calculation, tax calculation, deductions, benefits, bonuses, and
-payslip generation are excluded because the goal is salary management and
-salary analysis rather than payroll processing.
-
-### Employee Self-Service
-
-Employees cannot manage their own salary information. The system is
-designed for the HR Manager persona.
-
-### Historical Salary Tracking
-
-Salary history and audit trails are excluded from the initial version to
-keep the solution focused on the current salary dataset.
-
-### Complex Currency Conversion
-
-The initial version stores the employee's salary together with its currency.
-Complex real-time foreign exchange integration is excluded because it is
-not required to demonstrate salary management and analytics.
-
-## 5. Success Criteria
-
-The solution is successful when an HR Manager can manage employee salary
-records, search/filter a 10,000-employee dataset, and understand salary
-distribution through the dashboard without relying on Excel.
+An HR Manager can manage employee salary records, search/filter the
+10,000-employee dataset, and understand salary distribution through the
+dashboard — without relying on Excel.

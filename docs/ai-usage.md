@@ -1,100 +1,50 @@
-# AI Usage and Trade-off Notes
-
-This document records how AI tooling (Claude Code) was used while building this
-project, and captures implementation-level trade-offs that aren't already
-covered by the "Architectural Trade-offs" section in [architecture.md](./architecture.md).
-
-## 1. How AI was used
+# AI Usage and Implementation Notes
 
 Claude Code (Anthropic's CLI agent) was used as a pair-programmer throughout
-backend and frontend development. The workflow was milestone-based:
+backend and frontend development, in addition to the higher-level
+architecture trade-offs already covered in
+[architecture.md](./architecture.md#trade-offs).
 
-1. The full assessment brief was reviewed and broken into an ordered list of
-   milestones (search/filter, sorting/pagination, CRUD forms, delete
-   confirmation, dashboard analytics, navigation, tests, polish, docs, etc.).
-2. Each milestone was implemented, compiled/tested, and committed on its own
-   before moving to the next — one commit per milestone, verified with
-   `mvnw compile`/`mvnw test` (backend) and `ng build`/`ng test` (frontend).
-3. UI behavior itself (browser testing) was verified manually by the developer,
-   not by the AI — the AI's job was implementation and build verification, not
-   acting as a browser QA agent.
-4. Bugs found during manual testing (e.g. "Edit Employee" appearing stuck on
-   "Loading...") were reported back in plain language and root-caused/fixed by
-   the AI in the same session.
+## Workflow
 
-Representative instructions given to the AI during this project (paraphrased):
+Work was broken into milestones (search/filter, sorting/pagination, CRUD
+forms, delete confirmation, dashboard, navigation, tests, polish, docs,
+Docker...). Each milestone was implemented, then compiled/tested (`mvnw
+test`, `ng build`/`ng test`) before moving on. UI behavior itself was
+verified manually in the browser by the developer, not by the AI. Bugs
+found during manual testing were reported back in plain language and fixed
+in the same session.
 
-- "Let me know what's left to be done, and let's plan to do it in different
-  milestones, then make a commit and move further. Your job is to implement
-  and build and make a commit, I will do the UI testing on my own."
-- "When I click edit, it says 'loading employee...' and nothing happens" (bug
-  report that led to the zoneless change-detection fix, see below).
-- "Don't write lots of tests, just minimal" (scoped the test milestone to
-  fixing existing broken specs rather than adding new coverage).
-- "Skip this milestone, let's make the UI more modern where possible, but
-  don't make so many changes — just small improvements" (scoped the polish
-  pass deliberately small).
+Representative instructions given during the build (paraphrased):
 
-## 2. Trade-offs made during implementation
+- "Let's do this in milestones — implement, build, and I'll test the UI myself."
+- "When I click edit, it says loading and nothing happens" → led to the zoneless change-detection fix below.
+- "Don't write lots of tests, just minimal" → scoped the test milestone to fixing existing broken specs only.
+- "Skip this milestone, make small UI improvements" → a deliberately small, contained polish pass instead of a redesign.
+- "Skip public deployment, I don't have AWS" → scoped the final milestones to what's runnable locally/via Docker.
 
-These are decisions made while building individual milestones, in addition to
-the higher-level architecture trade-offs already documented in
-`architecture.md` section 11.
+## Implementation-level trade-offs
 
-### Merged Add/Edit into one `EmployeeFormComponent`
+**Shared `EmployeeFormComponent` for add + edit** — the two forms were
+identical in fields and validation, so one component handles both modes
+(loading and patching data when editing) instead of duplicating logic that
+would drift out of sync.
 
-The initial "Add Employee" form and the later "Edit Employee" requirement had
-identical fields and validation. Rather than duplicating the component, it was
-renamed into a shared `EmployeeFormComponent` that loads and patches existing
-data when an `id` route param is present, and calls create vs. update based on
-that mode.
+**CSS bar charts instead of a charting library** — the dashboard's
+department/country/distribution breakdowns needed relative comparisons, not
+full interactive charts, so plain `width: %` bars avoided a new dependency.
 
-**Trade-off:** slightly more branching inside one component vs. two small,
-simpler components. Chosen because the two forms had zero meaningful
-divergence — duplicating them would only have created a second place to keep
-validation rules in sync.
+**Zoneless change detection needs explicit `detectChanges()`** — this
+frontend has no `zone.js`, so Angular doesn't auto-render after async work.
+Discovered as a live bug (Edit Employee stuck on "Loading..."); fixed by
+injecting `ChangeDetectorRef` and calling `.detectChanges()` in every
+subscribe callback that mutates template state.
 
-### CSS bar charts instead of a charting library
+**Minimal test scope** — two pre-existing specs were broken (wrong imports,
+missing DI providers). Per instruction, the fix restored them as smoke
+tests only, rather than adding new coverage.
 
-The dashboard needed department/country/distribution breakdowns. No charting
-library was already installed.
-
-**Trade-off:** a real charting library (e.g. Chart.js, ngx-charts) would give
-richer visuals (tooltips, animations, axes) at the cost of a new dependency,
-bundle size, and API surface to learn. Plain CSS bars (`width: %` driven by
-each row's share of the max value) were chosen instead since the requirement
-was "show relative comparisons," not full interactive charting.
-
-### Zoneless change detection requires explicit `detectChanges()`
-
-This frontend has no `zone.js` dependency, so Angular does not automatically
-re-render after async work (HTTP responses, RxJS `subscribe` callbacks). This
-was discovered as a live bug: the Edit Employee form loaded data successfully
-but the view never updated, appearing stuck on "Loading...".
-
-**Trade-off / lesson:** every component that mutates template-bound state
-inside a `subscribe` callback must inject `ChangeDetectorRef` and call
-`.detectChanges()` explicitly. This is more manual than zone-based apps, but
-it was already the existing pattern in `EmployeeListComponent`; the fix was to
-apply it consistently everywhere else (form, dialog, dashboard) rather than
-add `zone.js` back in.
-
-### Minimal test scope
-
-Two pre-existing spec files (`employee.spec.ts`, `employee-list.spec.ts`) were
-broken (wrong imports, missing DI providers) and failed to even build under
-`ng test`. Per explicit instruction, the fix was scoped to making the existing
-five spec files pass again as smoke tests — no new spec files or deeper
-behavioral coverage were added.
-
-**Trade-off:** lower test coverage than an idealized implementation, in favor
-of matching the time/scope the developer asked for. Noted here so it's a
-deliberate, visible decision rather than an accidental gap.
-
-### Deferred backend cleanup/performance review
-
-A planned "backend cleanup and performance review" milestone was skipped in
-favor of a small, contained UI polish pass (background/shadows/spinners),
-per explicit instruction. The backend was left as-is from earlier milestones;
-this is a deliberate deferral, not an oversight, and can be revisited if time
-allows.
+**Deferred backend cleanup, skipped public deployment** — a planned backend
+cleanup/performance review milestone and a public deployment milestone were
+both explicitly skipped to prioritize other work; noted here as visible
+decisions rather than gaps.
