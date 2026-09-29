@@ -1,1 +1,20 @@
-<router-outlet></router-outlet>
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="app-title">Acme Salary Management</span>
+
+  <span class="spacer"></span>
+
+  <nav class="app-nav">
+    <a mat-button routerLink="/employees" routerLinkActive="active-link">
+      <mat-icon>people</mat-icon>
+      Employees
+    </a>
+    <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+      <mat-icon>bar_chart</mat-icon>
+      Dashboard
+    </a>
+  </nav>
+</mat-toolbar>
+
+<main class="app-content">
+  <router-outlet></router-outlet>
+</main>
