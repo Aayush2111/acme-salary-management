@@ -16,6 +16,26 @@
   }
 }
 
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  mat-form-field {
+    width: 220px;
+  }
+
+  .search-field {
+    width: 320px;
+  }
+
+  button {
+    margin-top: 4px;
+  }
+}
+
 .employee-summary {
   margin-bottom: 16px;
 }
@@ -49,6 +69,12 @@ tbody tr:hover {
 .loading {
   padding: 30px;
   text-align: center;
+}
+
+.no-results {
+  padding: 30px;
+  text-align: center;
+  color: #666;
 }
 
 .error {
