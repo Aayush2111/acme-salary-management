@@ -1,5 +1,6 @@
 package salary_management.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -45,6 +46,18 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 message,
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDataIntegrityViolation(
+            DataIntegrityViolationException exception) {
+
+        return new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Employee number or email already exists.",
                 LocalDateTime.now()
         );
     }

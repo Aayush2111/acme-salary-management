@@ -1,0 +1,46 @@
+.add-employee-page {
+  padding: 32px;
+  max-width: 720px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+  }
+
+  p {
+    margin-top: 6px;
+    color: #666;
+  }
+}
+
+.error {
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  background: #ffebee;
+}
+
+.employee-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 24px;
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
