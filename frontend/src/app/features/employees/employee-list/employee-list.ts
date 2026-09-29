@@ -7,6 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { EmployeeService } from '../../../core/services/employee';
@@ -24,7 +27,10 @@ import { PageResponse } from '../../../core/models/page-response.model';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss'
@@ -37,6 +43,7 @@ export class EmployeeListComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   employees: Employee[] = [];
+  displayedColumns = ['employeeNumber', 'name', 'email', 'department', 'country', 'jobTitle', 'salary'];
 
   departments: string[] = [];
   countries: string[] = [];
@@ -46,8 +53,11 @@ export class EmployeeListComponent implements OnInit {
 
   currentPage = 0;
   pageSize = 10;
+  pageSizeOptions = [10, 25, 50, 100];
   totalElements = 0;
-  totalPages = 0;
+
+  sortField = '';
+  sortDirection: 'asc' | 'desc' | '' = '';
 
   filterForm = new FormGroup({
     search: new FormControl(''),
@@ -103,6 +113,19 @@ export class EmployeeListComponent implements OnInit {
     this.filterForm.reset({ search: '', department: '', country: '' });
   }
 
+  onSortChange(sort: Sort): void {
+    this.sortField = sort.direction ? sort.active : '';
+    this.sortDirection = sort.direction;
+    this.currentPage = 0;
+    this.loadEmployees();
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadEmployees();
+  }
+
   loadEmployees(): void {
     this.loading = true;
     this.errorMessage = '';
@@ -111,19 +134,23 @@ export class EmployeeListComponent implements OnInit {
     const department = this.filterForm.controls.department.value;
     const country = this.filterForm.controls.country.value;
 
+    const sort = this.sortField && this.sortDirection
+      ? `${this.sortField},${this.sortDirection}`
+      : undefined;
+
     this.employeeService
       .getEmployees(
         this.currentPage,
         this.pageSize,
         search || undefined,
         department || undefined,
-        country || undefined
+        country || undefined,
+        sort
       )
       .subscribe({
         next: (response: PageResponse<Employee>) => {
           this.employees = response.content;
           this.totalElements = response.totalElements;
-          this.totalPages = response.totalPages;
 
           this.loading = false;
           this.cdRef.detectChanges();
@@ -136,19 +163,5 @@ export class EmployeeListComponent implements OnInit {
           this.cdRef.detectChanges();
         }
       });
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages - 1) {
-      this.currentPage++;
-      this.loadEmployees();
-    }
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 0) {
-      this.currentPage--;
-      this.loadEmployees();
-    }
   }
 }
