@@ -13,6 +13,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { EmployeeService } from '../../../core/services/employee';
@@ -35,7 +36,8 @@ import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
     MatIconModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss'

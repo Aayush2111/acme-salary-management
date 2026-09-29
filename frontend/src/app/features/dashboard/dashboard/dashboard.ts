@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { SalaryService } from '../../../core/services/salary';
 import {
@@ -11,7 +12,7 @@ import {
 } from '../../../core/models/salary.model';
 
 @Component({
-  imports: [CommonModule, MatCardModule],
+  imports: [CommonModule, MatCardModule, MatProgressSpinnerModule],
   selector: 'app-dashboard',
   styleUrl: './dashboard.scss',
   templateUrl: './dashboard.html',

@@ -24,7 +24,11 @@
 }
 
 .loading {
-  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
   color: #666;
 }
 
@@ -33,6 +37,14 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
+
+  mat-card {
+    transition: box-shadow 0.15s ease;
+  }
+
+  mat-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  }
 
   mat-card-title {
     font-size: 28px;

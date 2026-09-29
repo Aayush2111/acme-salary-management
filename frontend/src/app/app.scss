@@ -8,6 +8,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .app-title {
@@ -36,4 +37,5 @@
 
 .app-content {
   flex: 1 1 auto;
+  background: #f4f5f7;
 }

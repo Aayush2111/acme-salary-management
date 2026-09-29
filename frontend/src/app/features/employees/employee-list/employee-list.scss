@@ -49,9 +49,14 @@
   overflow-x: auto;
   background: white;
   border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 
   table {
     width: 100%;
+  }
+
+  tr.mat-row {
+    transition: background-color 0.15s ease;
   }
 
   tr.mat-row:hover .mat-cell {
@@ -66,8 +71,12 @@
 }
 
 .loading {
-  padding: 30px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
+  color: #666;
 }
 
 .error {
@@ -80,4 +89,5 @@
 mat-paginator {
   background: white;
   border-radius: 0 0 8px 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }

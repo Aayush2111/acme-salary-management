@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { EmployeeService } from '../../../core/services/employee';
 import { Employee } from '../../../core/models/employee.model';
@@ -19,7 +20,8 @@ import { Employee } from '../../../core/models/employee.model';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './employee-form.html',
   styleUrl: './employee-form.scss'

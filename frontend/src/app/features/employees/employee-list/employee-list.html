@@ -14,7 +14,7 @@
   <form class="filter-bar" [formGroup]="filterForm">
 
     <mat-form-field class="search-field" subscriptSizing="dynamic">
-      <mat-label>Search by name, employee #, or email</mat-label>
+      <mat-label>Search by name or email</mat-label>
       <input matInput formControlName="search" autocomplete="off" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
@@ -47,6 +47,7 @@
 
   @if (loading) {
     <div class="loading">
+      <mat-spinner diameter="28"></mat-spinner>
       Loading employees...
     </div>
   }
