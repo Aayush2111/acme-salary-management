@@ -23,6 +23,20 @@ Representative instructions given during the build (paraphrased):
 - "Skip this milestone, make small UI improvements" → a deliberately small, contained polish pass instead of a redesign.
 - "Skip public deployment, I don't have AWS" → scoped the final milestones to what's runnable locally/via Docker.
 
+## Scope of AI Involvement
+
+AI assistance was concentrated on two areas: **frontend UI implementation**
+(components, forms, dashboard, navigation) and **debugging issues hit while
+getting the app running in Docker** — a Node version mismatch in the
+frontend build image, a MySQL startup race that crashed the backend on
+first boot, and a host port conflict on 3306.
+
+The **overall architecture and design** — layering, package structure, the
+entity/DTO model, and the trade-off decisions themselves — were made
+manually, without AI assistance. AI was used afterward to help write up and
+document those already-made decisions here and in `architecture.md`, not to
+make them.
+
 ## Implementation-level trade-offs
 
 **Shared `EmployeeFormComponent` for add + edit** — the two forms were

@@ -34,11 +34,19 @@ development, testing, and demos.
 
 ## Deliberately Out of Scope
 
-- **Authentication/authorization** — a single HR Manager user/role is assumed.
+- **Authentication/authorization** — confirmed with HR that this is not
+  required; a single HR Manager user/role is assumed. This is why no login
+  flow (e.g. JWT-based auth) was implemented — there's no second role or
+  external user to protect the API from in this assessment's scope.
 - **Payroll processing** — no tax, deductions, benefits, or payslips; this is salary management, not payroll.
 - **Employee self-service** — built for the HR Manager persona only.
 - **Historical salary tracking** — no audit trail, current data only.
-- **Real-time currency conversion** — salary and currency are stored together, no live FX integration.
+- **Currency handling** — intentionally left open by the brief (store local
+  currencies, normalize to one reporting currency, or both, with a
+  fixed/deterministic FX rate if converting). This app stores each
+  employee's salary together with their local currency and does not
+  perform conversion or normalization, which is one of the acceptable
+  approaches under that flexibility.
 
 ## Success Criteria
 
