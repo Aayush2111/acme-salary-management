@@ -107,6 +107,9 @@
             <button mat-icon-button [routerLink]="['/employees', employee.id, 'edit']" aria-label="Edit employee">
               <mat-icon>edit</mat-icon>
             </button>
+            <button mat-icon-button (click)="deleteEmployee(employee)" aria-label="Delete employee">
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </ng-container>
 

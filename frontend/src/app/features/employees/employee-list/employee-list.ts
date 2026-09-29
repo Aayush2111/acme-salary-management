@@ -11,12 +11,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { EmployeeService } from '../../../core/services/employee';
 import { SalaryService } from '../../../core/services/salary';
 import { Employee } from '../../../core/models/employee.model';
 import { PageResponse } from '../../../core/models/page-response.model';
+import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-employee-list',
@@ -43,6 +46,8 @@ export class EmployeeListComponent implements OnInit {
   private readonly salaryService = inject(SalaryService);
   private readonly cdRef = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   employees: Employee[] = [];
   displayedColumns = ['employeeNumber', 'name', 'email', 'department', 'country', 'jobTitle', 'salary', 'actions'];
@@ -126,6 +131,38 @@ export class EmployeeListComponent implements OnInit {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadEmployees();
+  }
+
+  deleteEmployee(employee: Employee): void {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      data: {
+        title: 'Delete employee',
+        message: `Are you sure you want to delete ${employee.firstName} ${employee.lastName} (${employee.employeeNumber})? This cannot be undone.`,
+        confirmLabel: 'Delete'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.employeeService.deleteEmployee(employee.id).subscribe({
+        next: () => {
+          this.snackBar.open('Employee deleted successfully.', 'Close', { duration: 3000 });
+
+          if (this.employees.length === 1 && this.currentPage > 0) {
+            this.currentPage -= 1;
+          }
+
+          this.loadEmployees();
+        },
+        error: () => {
+          this.snackBar.open('Unable to delete employee.', 'Close', { duration: 3000 });
+          this.cdRef.detectChanges();
+        }
+      });
+    });
   }
 
   loadEmployees(): void {
