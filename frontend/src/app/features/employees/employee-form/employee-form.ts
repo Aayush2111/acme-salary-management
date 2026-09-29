@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -31,6 +31,7 @@ export class EmployeeFormComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly cdRef = inject(ChangeDetectorRef);
 
   employeeId: number | null = null;
   isEditMode = false;
@@ -69,10 +70,12 @@ export class EmployeeFormComponent implements OnInit {
       next: (employee) => {
         this.employeeForm.patchValue(employee);
         this.loading = false;
+        this.cdRef.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Unable to load employee.';
         this.loading = false;
+        this.cdRef.detectChanges();
       }
     });
   }
@@ -116,6 +119,7 @@ export class EmployeeFormComponent implements OnInit {
         this.errorMessage = error?.error?.message ||
           `Unable to ${this.isEditMode ? 'update' : 'create'} employee.`;
         this.submitting = false;
+        this.cdRef.detectChanges();
       }
     });
   }
