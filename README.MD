@@ -44,3 +44,4 @@ docker compose up --build
 - [Architecture](docs/architecture.md)
 - [API Reference](docs/api.md)
 - [AI Usage & Trade-offs](docs/ai-usage.md)
+- [Test Coverage](docs/test-coverage.md)
